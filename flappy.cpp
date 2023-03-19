@@ -14,6 +14,7 @@ FlappyBird::FlappyBird(){
     gravity = frame = {0.f};
     space = {160.f};
     count = {0};
+    gameOver = false;
 
     bg.loadFromFile("./resources/img/background.png");
     flappy.loadFromFile("./resources/img/flappy.png");
@@ -90,6 +91,11 @@ void FlappyBird::movePipes(){
     }
 
     for(std::size_t i{0}; i < pipes.size(); i++){
+
+        if(pipes[i].getGlobalBounds().intersects(bird->getGlobalBounds())){
+            gameOver = true;
+        }
+
         if(pipes[i].getPosition().x < -100){
             pipes.erase(pipes.begin() + i);
         }
@@ -102,6 +108,36 @@ void FlappyBird::movePipes(){
 
 void FlappyBird::game(){
 
+   if(gameOver)
+        return;
+    setAnimeBird();
+    moveBird();
     movePipes();
+
+}
+
+void FlappyBird::setAnimeBird(){
+
+    frame+= 0.15f;
+
+    if(frame>3)
+        frame-=3;
+    
+    bird->setTextureRect(sf::IntRect(34 * (int)frame, 0, 34, 24)); 
+
+}
+
+void FlappyBird::moveBird(){
+
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+        gravity = -6.f;
+        bird->setRotation(-frame - 10.f);
+    }
+    else{
+        gravity += 0.5f;
+        bird->setRotation(frame - 10.f);
+    }
+
+    bird->move(0, gravity);
 
 }

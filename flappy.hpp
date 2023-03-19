@@ -11,12 +11,15 @@ class FlappyBird{
     std::vector<sf::Sprite> pipes;
     float gravity, frame, space;
     int count;
+    bool gameOver;
 
     protected:
         void events();
         void draw();
         void game();
         void movePipes();
+        void setAnimeBird();
+        void moveBird();
     
     public:
         FlappyBird();
