@@ -13,12 +13,27 @@ FlappyBird::FlappyBird(){
 
     gravity = frame = {0.f};
     space = {160.f};
-    count = {0};
+    count = score = {0};
     gameOver = false;
 
     bg.loadFromFile("./resources/img/background.png");
     flappy.loadFromFile("./resources/img/flappy.png");
     pipe.loadFromFile("./resources/img/pipe.png");
+
+    font.loadFromFile("./resources/font/flappybird.ttf");
+
+    txtGameOver.setFont(font);
+    txtGameOver.setString("Press SPACE to restart");
+    txtGameOver.setPosition(200, 300);
+    txtGameOver.setCharacterSize(50);
+    txtGameOver.setOutlineThickness(3);
+
+    txtScore.setFont(font);
+    txtScore.setString("Score: 0");
+    txtScore.setPosition(10.f, 10.f);
+    txtScore.setCharacterSize(50);
+    txtScore.setOutlineThickness(3);
+
 
     background = std::make_shared<sf::Sprite>();
     bird = std::make_shared<sf::Sprite>();
@@ -47,6 +62,10 @@ void FlappyBird::events(){
             window->close();
 
     }
+
+    if(gameOver && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        restartGame();
+
 }
 
 void FlappyBird::draw(){
@@ -60,6 +79,11 @@ void FlappyBird::draw(){
     }
     window->draw(*bird);
 
+    if(gameOver){
+        window->draw(txtGameOver);
+    }
+
+    window->draw(txtScore);
     window->display();
 
 }
@@ -101,7 +125,9 @@ void FlappyBird::movePipes(){
         }
 
         pipes[i].move(-4.f, 0);
-
+        if(pipes[i].getPosition().x == 368){
+            txtScore.setString("Score: " + std::to_string((int)++score/2));
+        }
     }
 
 }
@@ -139,5 +165,23 @@ void FlappyBird::moveBird(){
     }
 
     bird->move(0, gravity);
+
+    if(bird->getPosition().y < 0 || bird->getPosition().y > 600)
+        gameOver = true;
+
+}
+
+void FlappyBird::restartGame(){
+
+    bird->setPosition(500.f - flappy.getSize().x/2.f, 300.f - flappy.getSize().y/2.f);
+    bird->setTextureRect(sf::IntRect(0, 0, 34, 24));
+
+    pipes.clear();
+
+    gravity = frame = {0.f};
+    count = score = {0};
+    gameOver = false;
+
+    txtScore.setString("Score: 0");
 
 }

@@ -9,8 +9,10 @@ class FlappyBird{
     sf::Texture bg, flappy, pipe;
     std::shared_ptr<sf::Sprite> background, bird, pipeTop, pipeBottom;
     std::vector<sf::Sprite> pipes;
+    sf::Font font;
+    sf::Text txtScore, txtGameOver;
     float gravity, frame, space;
-    int count;
+    int count, score;
     bool gameOver;
 
     protected:
@@ -20,6 +22,7 @@ class FlappyBird{
         void movePipes();
         void setAnimeBird();
         void moveBird();
+        void restartGame();
     
     public:
         FlappyBird();
