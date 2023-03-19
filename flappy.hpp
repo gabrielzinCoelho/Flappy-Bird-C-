@@ -15,6 +15,8 @@ class FlappyBird{
     protected:
         void events();
         void draw();
+        void game();
+        void movePipes();
     
     public:
         FlappyBird();

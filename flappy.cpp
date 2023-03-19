@@ -35,8 +35,6 @@ FlappyBird::FlappyBird(){
 
     pipeBottom->setScale(1.5f, 1.5f);
     pipeTop->setScale(1.5f, -1.5f);
-    pipeTop->setPosition(100.f, 100.f);
-    pipeBottom->setPosition(200.f, 100.f);
 
 }
 
@@ -55,9 +53,11 @@ void FlappyBird::draw(){
     window->clear(sf::Color::Black);
 
     window->draw(*background);
+
+    for(auto &p : pipes){
+        window->draw(p);
+    }
     window->draw(*bird);
-    window->draw(*pipeTop);
-    window->draw(*pipeBottom);
 
     window->display();
 
@@ -67,7 +67,41 @@ void FlappyBird::run(){
 
     while(window->isOpen()){
         events();
+        game();
         draw();
+
+        ++count;
+        if(count >= 300)
+            count = 0;
     }
+
+}
+
+void FlappyBird::movePipes(){
+
+    if(count%150 == 0){
+        int pos = std::rand() % 275 + 175;
+        pipeBottom->setPosition(1000, pos + space);
+        pipeTop->setPosition(1000, pos);
+
+        pipes.push_back(*pipeBottom);
+        pipes.push_back(*pipeTop);
+
+    }
+
+    for(std::size_t i{0}; i < pipes.size(); i++){
+        if(pipes[i].getPosition().x < -100){
+            pipes.erase(pipes.begin() + i);
+        }
+
+        pipes[i].move(-4.f, 0);
+
+    }
+
+}
+
+void FlappyBird::game(){
+
+    movePipes();
 
 }
